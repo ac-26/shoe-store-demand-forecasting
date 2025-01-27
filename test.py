@@ -1,2 +1,2 @@
 print("Testing for commit command....")
-print("checking")
+print("checking ashuuuuu")
