@@ -7,7 +7,7 @@ pd.set_option('display.max_columns',None)
 pd.set_option('display.width',None)
 
 #Put your path
-data = pd.read_excel(r'C:\Users\Ashutosh Gupta\OneDrive\Desktop\data.xlsx', index_col=False)
+data = pd.read_excel('/Users/arnavchopra/Desktop/PE-Data Mining Shoe Dataset.xlsx', index_col=False)
 print("\n\n\nSample dataset :- \n\n", data.head() )
 
 print("\n\n\nShape of the dataset = ", end="")
@@ -29,7 +29,7 @@ data['Colour'].value_counts().plot(kind='bar')
 plt.title('Colour Distribution')
 plt.xlabel('Colour')
 plt.ylabel('Frequency')
-plt.show()
+#plt.show()
 #
 # #For colour column we can use mode value to fill null positions  as it is skewed way too much
 data['Colour'] = data['Colour'].fillna(data['Colour'].mode()[0])
@@ -98,6 +98,7 @@ correlation_value = data["P_GROUP_NUM"].corr(data["QTY"])
 
 print(f"Correlation between P_GROUP and QTY: {correlation_value}")
 
+#---------------------
 #P_GROUP EDA
 
 print(data[data['P_GROUP'] == 'ACCESSORIES']['BRAND'].unique())
@@ -112,6 +113,7 @@ data.loc[data['P_GROUP'].isnull() & ~data['BRAND'].isin(['LFO', 'LSL']), 'P_GROU
 
 print(data.isnull().sum())
 
+#----------------
 #BRAND EDA
 print(data['BRAND'].unique())
 
@@ -129,6 +131,71 @@ print(data[~data['BRAND'].isin(['LFO','LSL'])]['BRAND'].mode())
 data.loc[data['BRAND'].isnull() & data['P_GROUP'].isin(['FOOTWEAR']), 'BRAND'] = 'GLIDERS'
 
 print(data.isnull().sum())
+
+#-------------------
+#Observing Leather Type
+print(data[data['LETHR_TYPE'].isnull()].head())
+#Filling the nan values of lethr type wherever p_group is accessories
+#as not applicable as any accessory inherently wont have a leather type.
+data.loc[data["P_GROUP"] == "ACCESSORIES", "LETHR_TYPE"] = "Not Applicable"
+
+# print("\n\n\n",data[data['LETHR_TYPE'].isnull()].head())
+
+#for the rest of the values as this is categorical data we use mode
+data['LETHR_TYPE'] = data['LETHR_TYPE'].fillna(data['LETHR_TYPE'].mode()[0])
+
+print(data.isnull().sum())
+
+#---------------
+#Observing Season
+print(data['SEASON'].unique())
+
+
+
+#---------------
+#Observing Indicator
+print(data['INDICATOR'].unique())
+
+
+
+
+#Handling spelling errors and uniformity
+data.drop(columns=["P_GROUP_NUM"], inplace=True)
+print(data.info())
+
+
+data.rename(columns={"Colour": "COLOUR", "P_GROUP": "ITEM_TYPE", "LETHR_TYPE": "LEATHER_TYPE"}, inplace=True)
+print(data.info())
+
+#Making date format correct
+print(data['RECEIPT_DATE'].head())
+data['RECEIPT_DATE'] = data['RECEIPT_DATE'].astype(str)
+data['YEAR']=data['RECEIPT_DATE'].str.split('-').str[0]
+data['MONTH']=data['RECEIPT_DATE'].str.split('-').str[1]
+data['DATE']=data['RECEIPT_DATE'].str.split('-').str[2]
+
+print("\n\n\n", data.head())
+
+last_col = data.columns[-1]
+col_data = data.pop(last_col)
+data.insert(0, last_col, col_data)
+
+last_col = data.columns[-1]
+col_data = data.pop(last_col)
+data.insert(0, last_col, col_data)
+
+last_col = data.columns[-1]
+col_data = data.pop(last_col)
+data.insert(0, last_col, col_data)
+
+
+#Deleting the old date format col
+data.drop(columns=["RECEIPT_DATE"], inplace=True)
+
+print("\n\n\n", data.head())
+
+
+
 
 
 
