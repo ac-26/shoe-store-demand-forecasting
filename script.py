@@ -7,7 +7,8 @@ pd.set_option('display.max_columns',None)
 pd.set_option('display.width',None)
 
 #Put your path
-data = pd.read_excel('/Users/arnavchopra/Desktop/PE-Data Mining Shoe Dataset.xlsx', index_col=False)
+data = pd.read_excel(r'C:\Users\Ashutosh Gupta\OneDrive\Desktop\data.xlsx', index_col=False)
+
 print("\n\n\nSample dataset :- \n\n", data.head() )
 
 print("\n\n\nShape of the dataset = ", end="")
@@ -194,9 +195,16 @@ data.drop(columns=["RECEIPT_DATE"], inplace=True)
 
 print("\n\n\n", data.head())
 
+#SEASON
 
+unique_size = data[data['SEASON'] == 'S16']['ITEM_TYPE'].unique()
+print(unique_size)
 
+#Only Footwear has season, accessory does not have season
 
+data.loc[data['ITEM_TYPE'] == 'ACCESSORIES' ,'SEASON'] = 'Unknown'
+
+print(data.isnull().sum())
 
 
 
