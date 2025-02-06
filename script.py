@@ -153,6 +153,7 @@ data.drop(columns=["P_GROUP_NUM"], inplace=True)
 # print(data.info())
 
 
+
 data.rename(columns={"Colour": "COLOUR", "P_GROUP": "ITEM_TYPE", "LETHR_TYPE": "LEATHER_TYPE"}, inplace=True)
 # print(data.info())
 
@@ -324,6 +325,8 @@ data = fill_season_mode(data)
 #---------------
 #Observing Indicator
 # print(data['INDICATOR'].unique())
+
+data.drop(columns=["INDICATOR"], inplace=True)
 
 print(data.isnull().sum())
 
