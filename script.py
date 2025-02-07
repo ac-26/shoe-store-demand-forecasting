@@ -8,7 +8,7 @@ pd.set_option('display.max_columns',None)
 pd.set_option('display.width',None)
 
 #Put your path
-data = pd.read_excel('/Users/arnavchopra/Desktop/PE-Data Mining Shoe Dataset.xlsx', index_col=False)
+data = pd.read_excel(r'C:\Users\Ashutosh Gupta\OneDrive\Desktop\data.xlsx', index_col=False)
 print("\n\n\nSample dataset :- \n\n", data.head() )
 
 print("\n\n\nShape of the dataset = ", end="")
@@ -330,16 +330,149 @@ data.drop(columns=["INDICATOR"], inplace=True)
 
 print(data.isnull().sum())
 
+# print(data['SEASON'].unique())
+
+data['SEASON'] = data['SEASON'].replace({
+    "S10": "SUMMER",
+    "S11": "SUMMER",
+    "S12": "SUMMER",
+    "S13": "SUMMER",
+    "S14": "SUMMER",
+    "S15": "SUMMER",
+    "S16": "SUMMER",
+    "S17": "SUMMER",
+    "S18": "SUMMER",
+    "S19": "SUMMER",
+    "S20": "SUMMER",
+    "SS": "SUMMER",
+    "W10": "WINTER",
+    "W11": "WINTER",
+    "W12": "WINTER",
+    "W13": "WINTER",
+    "W14": "WINTER",
+    "W15": "WINTER",
+    "W16": "WINTER",
+    "W17": "WINTER",
+    "W18": "WINTER",
+    "W19": "WINTER",
+    "W20": "WINTER",
+    "AW": "WINTER",
+})
+
+#For now I have taken AW as winter, and I have left universal
 
 
+# print(data['SEASON'].unique())
+
+# print((data['SEASON'] == 'UNIVRSL').sum())
+
+data["SEASON"] = data["SEASON"].replace({"UNIVRSL" : "UNIVERSAL"})
+
+SEASON_MAP ={
+    "SUMMER": 0,
+    "WINTER" : 1,
+    "UNIVERSAL" : 2,
+}
+
+data["SEASON"] = data["SEASON"].map(SEASON_MAP)
 
 
+# Gonna leave the universal as it is
 
+#Cleaning the Colour Section
 
+data["COLOUR"] = data["COLOUR"].replace({
+    "OLGREEN" : "OLIVE_GREEN",
+    "D.GREY" : "DARK_GREY",
+    "R.BLUE": "RED BLUE",
+    "P.GREEN": "PALE GREEN",
+    "T.BLUE": "TURQUOISE BLUE",
+    "N.BLUE": "NAVY BLUE",
+    "L.BEIGE": "LIGHT BEIGE",
+    "Maroon": "MAROON",
+    "MAHROON": "MAROON",
+    "purple": "PURPLE",
+    "violet": "VIOLET",
+    "S.BLUE": "SKY BLUE",
+    "elephnt": "ELEPHANT",
+    "ELEPHNT": "ELEPHANT",
+    "S.GREEN": "SAGE GREEN",
+    "natural": "NATURAL",
+    "golden": "GOLDEN",
+    "cream": "CREAM",
+    "D.BROWN": "DARK BROWN",
+    "L.GREY": "LIGHT GREY",
+    "Black": "BLACK",
+    "black": "BLACK",
+    "ASSTD": "ASSORTED",
+    "ASST": "ASSORTED",
+    "asstd": "ASSORTED",
+    "assorted": "ASSORTED",
+    "OFFWHITE": "OFF WHITE",
+    "GNMETAL": "GUN METAL",
+    "REVERSAB": "REVERSIBLE",
+    "REVERSEB" :  "REVERSIBLE",
+    "Reversib" :  "REVERSIBLE",
+    "Brown": "BROWN",
+    "brown" : "BROWN",
+    "lemon": "LEMON",
+    "L.GREEN": "LIGHT GREEN",
+    "fawn": "FAWN",
+    "neutral": "NEUTRAL",
+    "skin": "SKIN",
+    "silver": "SILVER",
+    "beige": "BEIGE",
+    "Beige": "BEIGE",
+    "multipl": "MULTI",
+    "MULTIPL": "MULTI",
+    "khaki": "KHAKI",
+    "Blue": "BLUE",
+    "Navy": "NAVY",
+    "skin+bk": "SKIN BLACK",
+    "Assorted": "ASSORTED",
+    "Tan": "TAN",
+    "L.BROWN": "LIGHT BROWN",
+    "Camel": "CAMEL",
+    "toupe": "TOUPE",
+    "Cherry": "CHERRY",
+    "Dark Bro": "DARK BROWN",
+    "Grey": "GREY",
+    "mauve": "MAUVE",
+    "mustard": "MUSTARD",
+    "peach": "PEACH",
+    "PEAH": "PEACH",
+    "Red": "RED",
+})
 
+print(data["COLOUR"].unique())
 
+# print(data["SEASON"].unique())
 
+# Scaling the size column
 
+data["SIZE"] = data["SIZE"]/30
+
+#Mapping the ITEM_TYPE
+
+ITEM_TYPE_MAPPING = {
+    "FOOTWEAR" : 0,
+    "ACCESSORIES" : 1,
+}
+
+data["ITEM_TYPE"] = data["ITEM_TYPE"].map(ITEM_TYPE_MAPPING)
+
+print(data.head())
+
+# Cleaning GROSS_VALUE column
+
+# print(data["GROSS_VALUE"].unique())
+
+data["GROSS_VALUE"] = data["GROSS_VALUE"].apply(lambda x: abs(x) if str(x).startswith('-') else x)
+
+print(data["GROSS_VALUE"].unique())
+
+print(data[data["GROSS_VALUE"] == 0].shape[0])
+# print(data[data["GROSS_VALUE"] == 0])
 
 
 
