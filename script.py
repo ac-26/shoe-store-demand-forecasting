@@ -589,3 +589,4 @@ scaler = MinMaxScaler()
 data[numerical_cols] = scaler.fit_transform(data[numerical_cols])
 
 # print(data.head())
+
