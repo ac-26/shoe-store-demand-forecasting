@@ -590,3 +590,20 @@ data[numerical_cols] = scaler.fit_transform(data[numerical_cols])
 
 # print(data.head())
 
+#-------------------------
+#Starting with model training
+
+#We use multi-model training for predicting
+# many features using a single ANN
+X = data.drop(columns=["QTY", "NET_VALUE", "GROSS_VALUE"])
+y = data[["QTY", "NET_VALUE", "GROSS_VALUE"]]
+
+#80-20 split
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+#Building the model
+
+
+
+print('Working good!')
