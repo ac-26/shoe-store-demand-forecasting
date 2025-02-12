@@ -1,3 +1,5 @@
+from pyexpat import features
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -8,14 +10,14 @@ pd.set_option('display.max_columns',None)
 pd.set_option('display.width',None)
 
 #Put your path
-data = pd.read_excel(r'C:\Users\Ashutosh Gupta\OneDrive\Desktop\data.xlsx', index_col=False)
-print("\n\n\nSample dataset :- \n\n", data.head() )
+data = pd.read_excel('/Users/arnavchopra/Desktop/Datasets/PE-Data Mining Shoe Dataset.xlsx', index_col=False)
+# print("\n\n\nSample dataset :- \n\n", data.head() )
 
-print("\n\n\nShape of the dataset = ", end="")
+# print("\n\n\nShape of the dataset = ", end="")
 print( data.shape)
 
-print("\n\n\n Sample data decription : \n")
-print( data.describe() )
+# print("\n\n\n Sample data decription : \n")
+# print( data.describe() )
 
 # #According to project requirement we don't need Barcode and EAN column as it is of no help to us, item no. acts as primary key
 data.drop('BARCODE', axis = 1, inplace = True)
@@ -328,7 +330,7 @@ data = fill_season_mode(data)
 
 data.drop(columns=["INDICATOR"], inplace=True)
 
-print(data.isnull().sum())
+# print(data.isnull().sum())
 
 # print(data['SEASON'].unique())
 
@@ -365,19 +367,6 @@ data['SEASON'] = data['SEASON'].replace({
 # print(data['SEASON'].unique())
 
 # print((data['SEASON'] == 'UNIVRSL').sum())
-
-data["SEASON"] = data["SEASON"].replace({"UNIVRSL" : "UNIVERSAL"})
-
-SEASON_MAP ={
-    "SUMMER": 0,
-    "WINTER" : 1,
-    "UNIVERSAL" : 2,
-}
-
-data["SEASON"] = data["SEASON"].map(SEASON_MAP)
-
-
-# Gonna leave the universal as it is
 
 #Cleaning the Colour Section
 
@@ -444,15 +433,93 @@ data["COLOUR"] = data["COLOUR"].replace({
     "Red": "RED",
 })
 
-print(data["COLOUR"].unique())
+# print(data["COLOUR"].unique())
 
 # print(data["SEASON"].unique())
 
-# Scaling the size column
 
-data["SIZE"] = data["SIZE"]/30
+# print(data.head())
 
-#Mapping the ITEM_TYPE
+# Cleaning GROSS_VALUE column
+
+# print(data["GROSS_VALUE"].unique())
+
+data["GROSS_VALUE"] = data["GROSS_VALUE"].apply(lambda x: abs(x) if str(x).startswith('-') else x)
+
+# print(data["GROSS_VALUE"].unique())
+
+
+
+#Checking where gross value is zero
+# print(data['ITEM_TYPE'].loc[data['GROSS_VALUE'] == 0])
+indexZeroPrice = data[ (data['GROSS_VALUE'] == 0) ].index
+data.drop(indexZeroPrice , inplace=True)
+# data.head(15)
+#Verifying
+# print(data['ITEM_TYPE'].loc[data['GROSS_VALUE'] == 0])
+
+#There are many items where quantity is negative
+# print(data.loc[data['QTY'] <= 0])
+indexZeroQTY = data[ (data['QTY'] <= 0) ].index
+data.drop(indexZeroQTY , inplace=True)
+# data.head(15)
+#Verifying
+# print(data.loc[data['QTY'] <= 0])
+
+#There are rows where discount is negative
+# print(data.loc[data['DIS%'] < 0])
+indexZeroDisc = data[ (data['DIS%'] < 0)].index
+data.drop(indexZeroDisc , inplace=True)
+
+#There are rows where discount is 100
+# print(data.loc[data['DIS%'] == 100])
+indexFullDisc = data[ (data['DIS%'] == 100)].index
+data.drop(indexFullDisc , inplace=True)
+#Verifying
+# print(data.loc[data['DIS%'] == 100])
+
+#There are values where net_value is 0
+# print(data.loc[data['NET_VALUE'] == 0])
+indexZeroPrice = data[ (data['NET_VALUE'] == 0)].index
+data.drop(indexZeroPrice , inplace=True)
+#Verifying
+# print(data.loc[data['DIS%'] == 100])
+
+
+# print(data[data["GROSS_VALUE"] == 0].shape[0])
+# print(data[data["GROSS_VALUE"] == 0])
+
+# print(data.loc[data['QTY'] == min(data['QTY'])])
+# print("\n\n")
+# # print(data['BRAND'].unique())
+# print(data.shape)
+
+# print(data.columns)
+# print(data['ITEM'].unique().size)
+
+
+
+#Multiple item number exist multiple times so this is also categorical
+# print(data.loc[data['ITEM'] == 57390])
+
+#To apply ANN we need all categorical columns into numbers so we use encoding techniques
+from sklearn.preprocessing import LabelEncoder
+
+# For High-Cardinality Categorical Features → Label Encoding is used
+categorical_cols = ['ARTICLE_NAME', 'ITEM', 'BRAND', 'COLOUR', 'LEATHER_TYPE']
+
+for col in categorical_cols:
+    data[col] = data[col].astype(str)  # Convert to string
+
+# Now apply Label Encoding
+from sklearn.preprocessing import LabelEncoder
+
+label_encoders = {}
+
+for col in categorical_cols:
+    label_encoders[col] = LabelEncoder()
+    data[col] = label_encoders[col].fit_transform(data[col])
+
 
 ITEM_TYPE_MAPPING = {
     "FOOTWEAR" : 0,
@@ -461,19 +528,64 @@ ITEM_TYPE_MAPPING = {
 
 data["ITEM_TYPE"] = data["ITEM_TYPE"].map(ITEM_TYPE_MAPPING)
 
-print(data.head())
+data["SEASON"] = data["SEASON"].replace({"UNIVRSL" : "UNIVERSAL"})
 
-# Cleaning GROSS_VALUE column
+SEASON_MAP ={
+    "SUMMER": 0,
+    "WINTER" : 1,
+    "UNIVERSAL" : 2,
+}
 
-# print(data["GROSS_VALUE"].unique())
+data["SEASON"] = data["SEASON"].map(SEASON_MAP)
 
-data["GROSS_VALUE"] = data["GROSS_VALUE"].apply(lambda x: abs(x) if str(x).startswith('-') else x)
+# print(data.head(25))
 
-print(data["GROSS_VALUE"].unique())
+# print("\n\n\n Sample data decription : \n")
+# print( data.describe() )
 
-print(data[data["GROSS_VALUE"] == 0].shape[0])
-# print(data[data["GROSS_VALUE"] == 0])
+#-----------------
+#Scaling numerical features
+
+#Before scaling we check if it is normally distributed or not
+import matplotlib.pyplot as plt
+import seaborn as sns
+import scipy.stats as stats
 
 
+numerical_cols = ["YEAR", "MONTH", "DATE", "QTY", "GROSS_VALUE", "DIS%", "DISC_VALUE", "NET_VALUE"]
 
+# # Plot histograms
+# for col in numerical_cols:
+#     plt.figure(figsize=(6, 4))
+#     sns.histplot(data[col], kde=True)
+#     plt.title(f"Histogram of {col}")
+#     plt.show()
+#
+# # Q-Q Plot for checking normality
+# for col in numerical_cols:
+#     plt.figure(figsize=(6, 4))
+#     stats.probplot(data[col], dist="norm", plot=plt)
+#     plt.title(f"Q-Q Plot of {col}")
+#     plt.show()
 
+#Because it is not clear from visualization we will do statisticly
+# from scipy.stats import shapiro
+#
+# for col in numerical_cols:
+#     stat, p = shapiro(data[col].dropna())
+#     print(f"{col}: p-value = {p:.5f}")
+#
+#     if p > 0.05:
+#         print("Likely Normally Distributed\n")
+#     else:
+#         print("Not Normally Distributed\n")
+
+#We find out that it is not normally distributed hence we can use MinMax Scaling
+from sklearn.preprocessing import MinMaxScaler
+
+# Initializing MinMaxScaler
+scaler = MinMaxScaler()
+# Fitting and transforming numerical columns
+data[numerical_cols] = scaler.fit_transform(data[numerical_cols])
+
+# print(data.head())
