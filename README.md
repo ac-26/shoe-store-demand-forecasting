@@ -64,10 +64,10 @@ The dataset includes **shoe sales records** from a Jaipur-based store, covering 
 ---
 
 ## 📊 Visualizations  
-<img src="images/sales_trends.png" width="500">  
+<img src="sales-trends.png" width="500">  
 *Figure 1: Monthly Sales Trends*  
 
-<img src="images/discount_effect.png" width="500">  
+<img src="discount-effect.png" width="500">  
 *Figure 2: Discount Effectiveness*  
 
 ---
