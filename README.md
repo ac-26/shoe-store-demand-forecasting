@@ -2,7 +2,7 @@
 
 ## 📌 Project Overview  
 This project focuses on **sales forecasting and inventory optimization** using **Data Science techniques**.  
-A **real dataset** from a **local shoe store in Jaipur (2015-2020)** was used, making this analysis unique and valuable.  
+A **real dataset** from a **local shoe store in Rajasthan (2015-2020)** was used, making this analysis unique and valuable.  
 By predicting sales trends, the project provides actionable insights for **stock management, pricing strategies, and demand forecasting**.  
 
 ---
